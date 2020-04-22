@@ -18,6 +18,10 @@
 		B105DF242440670100F8B524 /* MKMapViewUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B105DF232440670100F8B524 /* MKMapViewUITests.m */; };
 		B105DF33244067EB00F8B524 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B105DF32244067EB00F8B524 /* MapKit.framework */; };
 		B105DF36244070AF00F8B524 /* MyMapAnnotaion.m in Sources */ = {isa = PBXBuildFile; fileRef = B105DF35244070AF00F8B524 /* MyMapAnnotaion.m */; };
+		B17FF07C2450B354002CCB53 /* StudentInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B17FF07B2450B354002CCB53 /* StudentInfoTableViewController.m */; };
+		B185D37B244F285300571D2F /* UIView+MKAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B185D37A244F285300571D2F /* UIView+MKAnnotationView.m */; };
+		B1B1BE0024506D410010D323 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B1BDFF24506D410010D323 /* Student.m */; };
+		B1B1BE0324507AA00010D323 /* datanames.json in Resources */ = {isa = PBXBuildFile; fileRef = B1B1BE0224507AA00010D323 /* datanames.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +63,14 @@
 		B105DF32244067EB00F8B524 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B105DF34244070AF00F8B524 /* MyMapAnnotaion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMapAnnotaion.h; sourceTree = "<group>"; };
 		B105DF35244070AF00F8B524 /* MyMapAnnotaion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMapAnnotaion.m; sourceTree = "<group>"; };
+		B17FF07A2450B354002CCB53 /* StudentInfoTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StudentInfoTableViewController.h; sourceTree = "<group>"; };
+		B17FF07B2450B354002CCB53 /* StudentInfoTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StudentInfoTableViewController.m; sourceTree = "<group>"; };
+		B185D378244F230C00571D2F /* permLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = permLocation.gpx; sourceTree = "<group>"; };
+		B185D379244F285300571D2F /* UIView+MKAnnotationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+MKAnnotationView.h"; sourceTree = "<group>"; };
+		B185D37A244F285300571D2F /* UIView+MKAnnotationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+MKAnnotationView.m"; sourceTree = "<group>"; };
+		B1B1BDFE24506D410010D323 /* Student.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
+		B1B1BDFF24506D410010D323 /* Student.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
+		B1B1BE0224507AA00010D323 /* datanames.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = datanames.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,12 +123,16 @@
 		B105DEFB244066FE00F8B524 /* MKMapView */ = {
 			isa = PBXGroup;
 			children = (
+				B17FF0792450B32B002CCB53 /* Controllers */,
+				B1B1BE0124507A620010D323 /* Data */,
+				B1B1BDFD24506BE70010D323 /* Models */,
 				B105DEFC244066FE00F8B524 /* AppDelegate.h */,
 				B105DEFD244066FE00F8B524 /* AppDelegate.m */,
 				B105DEFF244066FE00F8B524 /* SceneDelegate.h */,
 				B105DF00244066FE00F8B524 /* SceneDelegate.m */,
 				B105DF02244066FE00F8B524 /* ViewController.h */,
 				B105DF03244066FE00F8B524 /* ViewController.m */,
+				B185D378244F230C00571D2F /* permLocation.gpx */,
 				B105DF05244066FE00F8B524 /* Main.storyboard */,
 				B105DF082440670000F8B524 /* Assets.xcassets */,
 				B105DF0A2440670000F8B524 /* LaunchScreen.storyboard */,
@@ -124,6 +140,8 @@
 				B105DF0E2440670000F8B524 /* main.m */,
 				B105DF34244070AF00F8B524 /* MyMapAnnotaion.h */,
 				B105DF35244070AF00F8B524 /* MyMapAnnotaion.m */,
+				B185D379244F285300571D2F /* UIView+MKAnnotationView.h */,
+				B185D37A244F285300571D2F /* UIView+MKAnnotationView.m */,
 			);
 			path = MKMapView;
 			sourceTree = "<group>";
@@ -152,6 +170,32 @@
 				B105DF32244067EB00F8B524 /* MapKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B17FF0792450B32B002CCB53 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B17FF07A2450B354002CCB53 /* StudentInfoTableViewController.h */,
+				B17FF07B2450B354002CCB53 /* StudentInfoTableViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B1B1BDFD24506BE70010D323 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B1B1BDFE24506D410010D323 /* Student.h */,
+				B1B1BDFF24506D410010D323 /* Student.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B1B1BE0124507A620010D323 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				B1B1BE0224507AA00010D323 /* datanames.json */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +301,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1B1BE0324507AA00010D323 /* datanames.json in Resources */,
 				B105DF0C2440670000F8B524 /* LaunchScreen.storyboard in Resources */,
 				B105DF092440670000F8B524 /* Assets.xcassets in Resources */,
 				B105DF07244066FE00F8B524 /* Main.storyboard in Resources */,
@@ -286,9 +331,12 @@
 			files = (
 				B105DF04244066FE00F8B524 /* ViewController.m in Sources */,
 				B105DEFE244066FE00F8B524 /* AppDelegate.m in Sources */,
+				B17FF07C2450B354002CCB53 /* StudentInfoTableViewController.m in Sources */,
 				B105DF0F2440670000F8B524 /* main.m in Sources */,
 				B105DF01244066FE00F8B524 /* SceneDelegate.m in Sources */,
+				B1B1BE0024506D410010D323 /* Student.m in Sources */,
 				B105DF36244070AF00F8B524 /* MyMapAnnotaion.m in Sources */,
+				B185D37B244F285300571D2F /* UIView+MKAnnotationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
