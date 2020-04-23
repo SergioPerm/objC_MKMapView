@@ -17,7 +17,6 @@
 
 @implementation Student
 
-
 - (instancetype)init
 {
     self = [super init];
@@ -27,18 +26,29 @@
     return self;
 }
 
-- (instancetype)initWithName:(NSString*) fullName andWithCenterCoordinate:(CLLocationCoordinate2D)coordinate
+- (instancetype)initWithName:(NSString*) fullName andWithMeetingPoint:(MeetingPoint*)meetingPoint
 {
     self = [super init];
     if (self) {
         
         self.fullName = fullName;
-        self.centerCoordinate = coordinate;
+        self.meetingPoint = meetingPoint;
         
         [self setupStudentSettings];
         
     }
     return self;
+}
+
+- (CLLocationDistance)distanceToMeeting {
+    
+    CLLocation* locationStudent = [[CLLocation alloc] initWithLatitude:self.coordinate.latitude longitude:self.coordinate.longitude];
+    CLLocation* meetingLocation = [[CLLocation alloc] initWithLatitude:self.meetingPoint.coordinate.latitude longitude:self.meetingPoint.coordinate.longitude];
+    
+    CLLocationDistance distanceToMeetPoint = [locationStudent distanceFromLocation:meetingLocation];
+    
+    return distanceToMeetPoint;
+    
 }
 
 - (void)setupStudentSettings {
@@ -51,8 +61,8 @@
     double rndLatitudeDelta = (arc4random() % 11) / 100.0 * (arc4random() % 2 == 0 ? -1 : 1);
     double rndLongitudeDelta = (arc4random() % 11) / 100.0 * (arc4random() % 2 == 0 ? -1 : 1);
     
-    double latitude = self.centerCoordinate.latitude + rndLatitudeDelta;
-    double longitude = self.centerCoordinate.longitude + rndLongitudeDelta;
+    double latitude = self.meetingPoint.coordinate.latitude + rndLatitudeDelta;
+    double longitude = self.meetingPoint.coordinate.longitude + rndLongitudeDelta;
     
     _coordinate = CLLocationCoordinate2DMake(latitude, longitude);
     

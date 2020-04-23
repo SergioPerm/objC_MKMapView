@@ -10,6 +10,8 @@
 #import "UIView+MKAnnotationView.h"
 #import "Student.h"
 #import "StudentInfoTableViewController.h"
+#import "MeetingPoint.h"
+#import "MeetingRadarOverlay.h"
 
 @interface ViewController () <MKMapViewDelegate>
 
@@ -19,6 +21,8 @@
 @property (strong, nonatomic) NSMutableArray* students;
 @property (strong, nonatomic) NSMutableArray* studentsNames;
 
+@property (strong, nonatomic) MeetingPoint* meetingPoint;
+
 @end
 
 @implementation ViewController
@@ -26,10 +30,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem* addRoutesButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionShowRoutesForStudents:)];
     UIBarButtonItem* addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(actionUpdateStudents:)];
     UIBarButtonItem* zoomButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(actionZoom:)];
     
-    self.navigationItem.rightBarButtonItems = @[zoomButton, addButton];
+    self.navigationItem.rightBarButtonItems = @[addRoutesButton, zoomButton, addButton];
       
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -38,6 +43,15 @@
     [self.locationManager startUpdatingLocation];
     self.mapView.showsUserLocation = YES;
     
+    //show meeting point
+    self.meetingPoint = [[MeetingPoint alloc] init];
+    
+    CLLocationCoordinate2D meetingCoordinate = CLLocationCoordinate2DMake(57.992049, 56.294794);
+    self.meetingPoint.coordinate = meetingCoordinate;
+    
+    [self.mapView addAnnotation:self.meetingPoint];
+        
+    [self updateMeetingRadarOverlays];
     
     //generate names arr
     NSDictionary* dictNames = [self JSONFromFile];
@@ -60,6 +74,71 @@
 
 #pragma mark - Methods
 
+- (UIColor*) generateColor {
+    
+    return [UIColor colorWithHue:drand48() saturation:1.0 brightness:1.0 alpha:1.0];
+    
+}
+
+- (void)updateDistanceDataForStudents {
+    
+    int overDistance = 0;
+    int within5distance = 0;
+    int within3distance = 0;
+    int within1distance = 0;
+    
+    for (Student* student in self.students) {
+        
+        CLLocationDistance distance = student.distanceToMeeting;
+        
+        if (distance > 5000) {
+            student.distanceType = DistanceToMeetAbroad;
+            overDistance++;
+        } else if (distance > 3000 && distance <= 5000) {
+            student.distanceType = DistanceToMeetFar;
+            within5distance++;
+        } else if (distance > 1000 && distance <= 3000) {
+            student.distanceType = DistanceToMeetMiddle;
+            within3distance++;
+        } else {
+            student.distanceType = DistanceToMeetNear;
+            within1distance++;
+        }
+        
+    }
+    
+    self.range5000Label.text = [NSString stringWithFormat:@"%@ %d",@"Range > 5000 m - ",overDistance];
+    self.range3000Label.text = [NSString stringWithFormat:@"%@ %d",@"Range > 3000 m - ",within5distance];
+    self.range1000Label.text = [NSString stringWithFormat:@"%@ %d",@"Range > 1000 m - ",within3distance];
+    self.rangeMeetPointLabel.text = [NSString stringWithFormat:@"%@ %d",@"Range < 1000 m - ",within1distance];
+    
+}
+
+- (void)updateMeetingRadarOverlays {
+        
+    NSMutableArray* overlaysForDelete = [NSMutableArray array];
+    
+    for (id<MKOverlay> overlay in self.mapView.overlays) {
+        
+        if ([overlay isKindOfClass:[MeetingRadarOverlay class]]) {
+            [overlaysForDelete addObject:overlay];
+        }
+        
+    }
+    
+    if ([overlaysForDelete count] > 0)
+        [self.mapView removeOverlays:overlaysForDelete];
+    
+    NSMutableArray* overlays = [NSMutableArray array];
+    
+    [overlays addObject:[MeetingRadarOverlay circleWithCenterCoordinate:self.meetingPoint.coordinate radius:5000]];
+    [overlays addObject:[MeetingRadarOverlay circleWithCenterCoordinate:self.meetingPoint.coordinate radius:3000]];
+    [overlays addObject:[MeetingRadarOverlay circleWithCenterCoordinate:self.meetingPoint.coordinate radius:1000]];
+    
+    [self.mapView addOverlays:overlays level:MKOverlayLevelAboveRoads];
+    
+}
+
 - (void)setLocationForStudent:(Student*) student {
     
     CLLocation* location = [[CLLocation alloc] initWithLatitude:student.coordinate.latitude longitude:student.coordinate.longitude];
@@ -78,13 +157,10 @@
                 
                 CLPlacemark* placeMark = [placemarks firstObject];
                 
-                NSString *address = [NSString stringWithFormat:@"%@, %@, %@, %@, %@, %@",
-                                     placeMark.thoroughfare,
-                                     placeMark.locality,
-                                     placeMark.subLocality,
-                                     placeMark.administrativeArea,
-                                     placeMark.postalCode,
-                                     placeMark.country];
+                NSString* address = [NSString stringWithFormat:@"%@, %@",
+                                     placeMark.locality == nil ? @"" : placeMark.locality,
+                                     placeMark.name == nil ? @"" : placeMark.name];
+                
                 
                 student.address = address;
                 
@@ -148,7 +224,90 @@
     
 }
 
+- (void)addRouteToMeetOverlayForStudent:(Student*) student {
+    
+    MKDirections* directions;
+    
+    MKDirectionsRequest* request = [[MKDirectionsRequest alloc] init];
+    
+    MKPlacemark* placemarkSource = [[MKPlacemark alloc] initWithCoordinate:student.coordinate];
+    request.source = [[MKMapItem alloc] initWithPlacemark:placemarkSource];
+    
+    MKPlacemark* placemarkDestination = [[MKPlacemark alloc] initWithCoordinate:self.meetingPoint.coordinate];
+    
+    request.destination = [[MKMapItem alloc] initWithPlacemark:placemarkDestination];
+        
+    request.transportType = MKDirectionsTransportTypeAutomobile;
+    
+    directions = [[MKDirections alloc] initWithRequest:request];
+    
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error) {
+                        
+        } else if ([response.routes count] > 0) {
+                        
+            NSMutableArray* array = [NSMutableArray array];
+            
+            for (MKRoute* route in response.routes) {
+                [array addObject:route.polyline];
+            }
+            
+            [self.mapView addOverlays:array level:MKOverlayLevelAboveRoads];
+            
+        }
+        
+    }];
+    
+}
+
+- (void)clearAllRoutes {
+    
+    NSMutableArray* routesForDelete = [NSMutableArray array];
+    
+    for (id<MKOverlay> overlay in self.mapView.overlays) {
+        
+        if ([overlay isKindOfClass:[MKPolyline class]]) {
+            [routesForDelete addObject:overlay];
+        }
+        
+    }
+    
+    if ([routesForDelete count] > 0)
+        [self.mapView removeOverlays:routesForDelete];
+    
+}
+
+- (void)updateRoutesForStudents {
+    
+    [self clearAllRoutes];
+    
+    for (Student* student in self.students) {
+    
+        int rndPercent = arc4random() % 100;
+        
+        if (student.distanceType == DistanceToMeetNear && rndPercent < 90) {
+            [self addRouteToMeetOverlayForStudent:student];
+        } else if (student.distanceType == DistanceToMeetMiddle && rndPercent < 70) {
+            [self addRouteToMeetOverlayForStudent:student];
+        } else if (student.distanceType == DistanceToMeetFar && rndPercent < 50) {
+            [self addRouteToMeetOverlayForStudent:student];
+        } else if (student.distanceType == DistanceToMeetAbroad && rndPercent < 20) {
+            [self addRouteToMeetOverlayForStudent:student];
+        }
+        
+    }
+    
+}
+
 #pragma mark - Actions
+
+- (void)actionShowRoutesForStudents:(UIBarButtonItem*) sender {
+    
+    [self clearAllRoutes];
+    [self updateRoutesForStudents];
+    
+}
 
 - (void)actionShowStudentInfo:(UIButton*) sender {
     
@@ -174,6 +333,7 @@
 - (void)actionUpdateStudents:(UIBarButtonItem*) sender {
     
     //delete all students
+    [self clearAllRoutes];
     
     NSMutableArray* studentsForDelete = [NSMutableArray array];
     
@@ -185,21 +345,25 @@
         
     }
     
-    if ([studentsForDelete count] > 0)
+    if ([studentsForDelete count] > 0) {
         [self.mapView removeAnnotations:[studentsForDelete copy]];
+        [self.students removeAllObjects];
+    }
         
     //create new students
     for (int i = 0; i < 15; i++) {
         
         NSString* fullStudentName = [self getRandomStudentName];
         
-        Student* student = [[Student alloc] initWithName:fullStudentName andWithCenterCoordinate:self.mapView.userLocation.location.coordinate];
+        Student* student = [[Student alloc] initWithName:fullStudentName andWithMeetingPoint:self.meetingPoint];
         [self setLocationForStudent:student];
         [self.students addObject:student];
         
     }
     
     [self.mapView showAnnotations:self.students animated:YES];
+    
+    [self updateDistanceDataForStudents];
     
 }
 
@@ -323,10 +487,40 @@
 
 #pragma mark - MKMapViewDelegate
 
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
+        
+    if ([view.annotation isKindOfClass:[MeetingPoint class]] && newState == MKAnnotationViewDragStateEnding) {
+        
+        [self updateMeetingRadarOverlays];
+        [self updateDistanceDataForStudents];
+        [self updateRoutesForStudents];
+        
+    }
+    
+}
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
 
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         return nil;
+    }
+    
+    if ([annotation isKindOfClass:[MeetingPoint class]]) {
+        
+        static NSString* identifier = @"meetingAnnotation";
+        
+        MKAnnotationView* annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        
+        if (!annotationView) {
+            annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+        }
+        
+        annotationView.image = [UIImage imageNamed:@"meetingPoint"];
+        
+        annotationView.draggable = YES;
+        
+        return annotationView;
+        
     }
 
     static NSString* identifier = @"Annotation";
@@ -366,14 +560,33 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
     
+    if ([overlay isKindOfClass:[MeetingRadarOverlay class]]) {
+        
+        MKCircleRenderer* circleRenderer = [[MKCircleRenderer alloc] initWithOverlay:overlay];
+        circleRenderer.fillColor = [UIColor greenColor];
+        
+        MeetingRadarOverlay* meetingRadar = (MeetingRadarOverlay*)overlay;
+        
+        if (meetingRadar.radius == 5000) {
+            circleRenderer.alpha = 0.25;
+        } else if (meetingRadar.radius == 3000) {
+            circleRenderer.alpha = 0.35;
+        } else {
+            circleRenderer.alpha = 0.5;
+        }
+
+        return circleRenderer;
+        
+    }
+        
     if ([overlay isKindOfClass:[MKPolyline class]]) {
         
         MKPolyline* routePolyline = (MKPolyline*)overlay;
         
         MKPolylineRenderer* renderer = [[MKPolylineRenderer alloc] initWithPolyline:routePolyline];
         
-        renderer.lineWidth = 2;
-        renderer.strokeColor = [UIColor greenColor];
+        renderer.lineWidth = 3;
+        renderer.strokeColor = [self generateColor];
         
         return renderer;
             

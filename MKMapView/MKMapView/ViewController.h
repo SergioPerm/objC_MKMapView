@@ -17,5 +17,10 @@
 @property (strong, nonatomic) CLLocationManager* locationManager;
 @property (strong, nonatomic) CLLocation* location;
 
+@property (weak, nonatomic) IBOutlet UILabel *range5000Label;
+@property (weak, nonatomic) IBOutlet UILabel *range3000Label;
+@property (weak, nonatomic) IBOutlet UILabel *range1000Label;
+@property (weak, nonatomic) IBOutlet UILabel *rangeMeetPointLabel;
+
 @end
 

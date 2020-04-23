@@ -18,6 +18,8 @@
 		B105DF242440670100F8B524 /* MKMapViewUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B105DF232440670100F8B524 /* MKMapViewUITests.m */; };
 		B105DF33244067EB00F8B524 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B105DF32244067EB00F8B524 /* MapKit.framework */; };
 		B105DF36244070AF00F8B524 /* MyMapAnnotaion.m in Sources */ = {isa = PBXBuildFile; fileRef = B105DF35244070AF00F8B524 /* MyMapAnnotaion.m */; };
+		B16C8ABA2451850E00DBC128 /* MeetingPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = B16C8AB92451850E00DBC128 /* MeetingPoint.m */; };
+		B16C8ABD245194DC00DBC128 /* MeetingRadarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = B16C8ABC245194DC00DBC128 /* MeetingRadarOverlay.m */; };
 		B17FF07C2450B354002CCB53 /* StudentInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B17FF07B2450B354002CCB53 /* StudentInfoTableViewController.m */; };
 		B185D37B244F285300571D2F /* UIView+MKAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B185D37A244F285300571D2F /* UIView+MKAnnotationView.m */; };
 		B1B1BE0024506D410010D323 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B1BDFF24506D410010D323 /* Student.m */; };
@@ -63,6 +65,10 @@
 		B105DF32244067EB00F8B524 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B105DF34244070AF00F8B524 /* MyMapAnnotaion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMapAnnotaion.h; sourceTree = "<group>"; };
 		B105DF35244070AF00F8B524 /* MyMapAnnotaion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMapAnnotaion.m; sourceTree = "<group>"; };
+		B16C8AB82451850E00DBC128 /* MeetingPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeetingPoint.h; sourceTree = "<group>"; };
+		B16C8AB92451850E00DBC128 /* MeetingPoint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MeetingPoint.m; sourceTree = "<group>"; };
+		B16C8ABB245194DC00DBC128 /* MeetingRadarOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeetingRadarOverlay.h; sourceTree = "<group>"; };
+		B16C8ABC245194DC00DBC128 /* MeetingRadarOverlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MeetingRadarOverlay.m; sourceTree = "<group>"; };
 		B17FF07A2450B354002CCB53 /* StudentInfoTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StudentInfoTableViewController.h; sourceTree = "<group>"; };
 		B17FF07B2450B354002CCB53 /* StudentInfoTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StudentInfoTableViewController.m; sourceTree = "<group>"; };
 		B185D378244F230C00571D2F /* permLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = permLocation.gpx; sourceTree = "<group>"; };
@@ -186,6 +192,10 @@
 			children = (
 				B1B1BDFE24506D410010D323 /* Student.h */,
 				B1B1BDFF24506D410010D323 /* Student.m */,
+				B16C8AB82451850E00DBC128 /* MeetingPoint.h */,
+				B16C8AB92451850E00DBC128 /* MeetingPoint.m */,
+				B16C8ABB245194DC00DBC128 /* MeetingRadarOverlay.h */,
+				B16C8ABC245194DC00DBC128 /* MeetingRadarOverlay.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -332,11 +342,13 @@
 				B105DF04244066FE00F8B524 /* ViewController.m in Sources */,
 				B105DEFE244066FE00F8B524 /* AppDelegate.m in Sources */,
 				B17FF07C2450B354002CCB53 /* StudentInfoTableViewController.m in Sources */,
+				B16C8ABA2451850E00DBC128 /* MeetingPoint.m in Sources */,
 				B105DF0F2440670000F8B524 /* main.m in Sources */,
 				B105DF01244066FE00F8B524 /* SceneDelegate.m in Sources */,
 				B1B1BE0024506D410010D323 /* Student.m in Sources */,
 				B105DF36244070AF00F8B524 /* MyMapAnnotaion.m in Sources */,
 				B185D37B244F285300571D2F /* UIView+MKAnnotationView.m in Sources */,
+				B16C8ABD245194DC00DBC128 /* MeetingRadarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

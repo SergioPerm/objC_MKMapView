@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import "MeetingPoint.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,6 +16,13 @@ typedef enum {
     StudentMale,
     StudentFemale
 } StudentSex;
+
+typedef enum {
+    DistanceToMeetNear,
+    DistanceToMeetMiddle,
+    DistanceToMeetFar,
+    DistanceToMeetAbroad
+} DistanceToMeetType;
 
 @interface Student : NSObject <MKAnnotation>
 
@@ -31,7 +39,12 @@ typedef enum {
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 
-- (id)initWithName:(NSString*)fullName andWithCenterCoordinate:(CLLocationCoordinate2D)coordinate;
+@property (weak, nonatomic) MeetingPoint* meetingPoint;
+@property (assign, nonatomic) CLLocationDistance distanceToMeeting;
+
+@property (assign, nonatomic) DistanceToMeetType distanceType;
+
+- (id)initWithName:(NSString*) fullName andWithMeetingPoint:(MeetingPoint*)meetingPoint;
 
 @end
 
